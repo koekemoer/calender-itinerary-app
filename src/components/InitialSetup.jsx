@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const InitialSetup = () => {
     const [city, setCity] = useState('');
-    const [timeFormat, setTimeFormat] = useState('24H');
+    const [timeFormat, setTimeFormat] = useState('24h');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         console.log("e?", e);
@@ -13,8 +15,24 @@ const InitialSetup = () => {
         localStorage.setItem('userCity', city);
         localStorage.setItem('userTimeFormat', timeFormat);
 
-        window.location.href = '/dashboard';
+        // window.location.href = '/dashboard';
+        navigate('/dashboard');
     };
+
+    /**
+     * useEffect runs side effects (like checking localStorage or calling an API) after the component renders. In this case, you’re using it to:
+        Check if the user already set up their city/time
+        Redirect to the dashboard if setup is complete
+     */
+    useEffect(() => {
+        const storedCity = localStorage.getItem('userCity');
+        const storedTimeFormat = localStorage.getItem('userTimeFormat');
+
+        if (storedCity && storedTimeFormat) {
+            navigate('/dashboard');
+        }
+
+    }, [navigate]);
 
     return (
         <form onSubmit={handleSubmit}>
